@@ -18,10 +18,8 @@ class UTKFaceDataset(Dataset):
         img_name = os.path.join(self.root_dir, self.image_files[idx])
         image = Image.open(img_name)
         
-        # Görüntü işlemesi
         image = self.preprocess(image)
 
-        # Metin etiketi oluşturma
         filename = self.image_files[idx]
         age, gender, race = filename.split("_")[:3]
         
