@@ -3,15 +3,26 @@ import clip
 from PIL import Image
 import numpy as np
 from classificationTest import classificationTextData
+import time
+
+
+initialMilisecond = int(time.time() * 1000)
 
 # Load the CLIP model (ViT-B/32) and preprocessing method
 model, preprocess = clip.load("ViT-B/32", download_root="clipModel")
 
+currentMiliseconds = int(time.time() * 1000)-initialMilisecond
+print(f"Current milliseconds: {currentMiliseconds}")
 # Load and preprocess the image. Then, add a batch dimension using unsqueeze(0)
-image = preprocess(Image.open("test.jpg")).unsqueeze(0)
+image = preprocess(Image.open("test13.jpeg")).unsqueeze(0)
+
+
 
 # Tokenize the classification text data (convert the text into input suitable for CLIP)
 text = clip.tokenize(classificationTextData)
+
+currentMiliseconds = int(time.time() * 1000)-initialMilisecond
+print(f"After milliseconds: {currentMiliseconds}")
 
 # Disable gradient computation since we're just performing inference
 with torch.no_grad():
@@ -24,8 +35,13 @@ with torch.no_grad():
     # Get the similarity scores between the image and the text using the CLIP model
     logits_per_image, logits_per_text = model(image, text)
     
+
     # Apply softmax to the similarity scores to get the probabilities
     probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+
+
+currentMiliseconds = int(time.time() * 1000)-initialMilisecond
+print(f"After encode milliseconds: {currentMiliseconds}")
 
 # Uncomment the following line to print the probabilities
 # print("Probabilities:", probs)
@@ -44,3 +60,7 @@ print(f"Highest probability: {max_value}, Index: {max_index}")
 
 # Print the class with the highest probability
 print(f"Class with the highest probability: {classificationTextData[max_index]}")
+
+
+currentMiliseconds = int(time.time() * 1000)-initialMilisecond
+print(f"End milliseconds: {currentMiliseconds}")
